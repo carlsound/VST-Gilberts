@@ -3,6 +3,8 @@
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
+#include "maximilian.h"
+
 namespace Carlsound {
 namespace Gilberts {
 
@@ -32,8 +34,8 @@ public:
 
 protected:
 	Steinberg::Vst::ParamValue mParam1 = 0;
-	Steinberg::int16 mParam2 = 0;
 	bool mBypass = false;
+	maxiOsc mOscillatorLeft, mOscillatorRight;
 };
 
 //------------------------------------------------------------------------
