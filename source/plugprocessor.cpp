@@ -31,8 +31,10 @@ Steinberg::tresult PLUGIN_API PlugProcessor::initialize (FUnknown* context)
 	addAudioInput (STR16 ("AudioInput"), Steinberg::Vst::SpeakerArr::kStereo);
 	addAudioOutput (STR16 ("AudioOutput"), Steinberg::Vst::SpeakerArr::kStereo);
 
-	mOscillatorLeft.phaseReset(0.0);
-	mOscillatorRight.phaseReset(0.0);
+	mOscillatorLeft = std::make_shared<maxiOsc>();
+	mOscillatorRight = std::make_shared<maxiOsc>();
+
+	mOscillatorSettings = std::make_shared<maxiSettings>();
 
 	return Steinberg::kResultTrue;
 }
@@ -113,9 +115,11 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 		// Process Algorithm
 		// Ex: algo.process (data.inputs[0].channelBuffers32, data.outputs[0].channelBuffers32,
 		// data.numSamples);
-        
-        //
-        //data.outputs[0].channelBuffers64;
+
+		mOscillatorSettings->channels = data.inputs[0].numChannels;
+		mOscillatorSettings->bufferSize = data.numSamples;
+		mOscillatorSettings->sampleRate = data.processContext->sampleRate;
+		
 
         // assume the same input channel count as the output
 		Steinberg::int32 numChannels = data.inputs[0].numChannels;
@@ -158,8 +162,8 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 			}
 			else
 			{
-				mGainLeft = mOscillatorLeft.coswave(1.0/mSpeed);
-				mGainRight = mOscillatorRight.sinewave(1.0/mSpeed);
+				mGainLeft = mOscillatorLeft->coswave(1.0/mSpeed);
+				mGainRight = mOscillatorRight->sinewave(1.0/mSpeed);
 			}
 			for (int channel = 0; channel < data.inputs->numChannels; channel++)
 			{

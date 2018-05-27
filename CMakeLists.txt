@@ -14,6 +14,7 @@ set(plug_sources
     #---
     #---https://github.com/micknoise/Maximilian
     include/maximilian.h
+    include/maximilian.cpp
 )
 
 #--- HERE change the target Name for your plug-in (for ex. set(target myDelay))-------

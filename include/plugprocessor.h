@@ -35,7 +35,8 @@ public:
 protected:
 	Steinberg::Vst::ParamValue mSpeed = 0;
 	bool mBypass = false;
-	maxiOsc mOscillatorLeft, mOscillatorRight;
+	std::shared_ptr<maxiSettings> mOscillatorSettings;
+	std::shared_ptr<maxiOsc> mOscillatorLeft, mOscillatorRight;
 	double mGainLeft, mGainRight;
 };
 
