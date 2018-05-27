@@ -118,8 +118,7 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 
 		mOscillatorSettings->channels = data.inputs[0].numChannels;
 		mOscillatorSettings->bufferSize = data.numSamples;
-		mOscillatorSettings->sampleRate = data.processContext->sampleRate;
-		
+		//mOscillatorSettings->sampleRate = data.processContext->sampleRate;
 
         // assume the same input channel count as the output
 		Steinberg::int32 numChannels = data.inputs[0].numChannels;
@@ -152,8 +151,8 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 
         // mark our outputs has not silent
         data.outputs[0].silenceFlags = 0;
-
-		for (int sample = 0; sample < data.numSamples; sample++)
+        
+        for (int sample = 0; sample < data.numSamples; sample++)
 		{
 			if(mBypass)
 			{
@@ -169,11 +168,11 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 			{
 				if (data.symbolicSampleSize == Steinberg::Vst::kSample32) //32-Bit
 				{
-					*data.outputs[channel].channelBuffers32[sample] = *data.inputs[channel].channelBuffers32[sample] * mGainLeft;
+					//*data.outputs[channel].channelBuffers32[sample] = *data.inputs[channel].channelBuffers32[sample] * mGainLeft;
 				}
 				else // 64-Bit
 				{
-					*data.outputs[channel].channelBuffers64[sample] = *data.inputs[channel].channelBuffers64[sample] * mGainRight;
+					//*data.outputs[channel].channelBuffers64[sample] = *data.inputs[channel].channelBuffers64[sample] * mGainRight;
 				}
 			}
 		}
