@@ -33,9 +33,10 @@ public:
 	}
 
 protected:
-	Steinberg::Vst::ParamValue mParam1 = 0;
+	Steinberg::Vst::ParamValue mSpeed = 0;
 	bool mBypass = false;
 	maxiOsc mOscillatorLeft, mOscillatorRight;
+	double mGainLeft, mGainRight;
 };
 
 //------------------------------------------------------------------------
