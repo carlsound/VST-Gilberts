@@ -31,8 +31,8 @@ Steinberg::tresult PLUGIN_API PlugProcessor::initialize (FUnknown* context)
 	addAudioInput (STR16 ("AudioInput"), Steinberg::Vst::SpeakerArr::kStereo);
 	addAudioOutput (STR16 ("AudioOutput"), Steinberg::Vst::SpeakerArr::kStereo);
 
-	mOscillatorLeft = std::make_shared<maxiOsc>();
-	mOscillatorRight = std::make_shared<maxiOsc>();
+	mOscillator[0] = std::make_shared<maxiOsc>();
+	mOscillator[1] = std::make_shared<maxiOsc>();
 
 	mOscillatorSettings = std::make_shared<maxiSettings>();
 
@@ -118,7 +118,7 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 
 		mOscillatorSettings->channels = data.inputs[0].numChannels;
 		mOscillatorSettings->bufferSize = data.numSamples;
-		//mOscillatorSettings->sampleRate = data.processContext->sampleRate;
+		mOscillatorSettings->sampleRate = (int) processSetup.sampleRate;
 
         // assume the same input channel count as the output
 		Steinberg::int32 numChannels = data.inputs[0].numChannels;
@@ -156,23 +156,25 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 		{
 			if(mBypass)
 			{
-				mGainLeft = 1.0;
-				mGainRight = 1.0;
+				mGain[0] = 1.0;
+				mGain[1] = 1.0;
 			}
 			else
 			{
-				mGainLeft = mOscillatorLeft->coswave(1.0/mSpeed);
-				mGainRight = mOscillatorRight->sinewave(1.0/mSpeed);
+				mGain[0] = mOscillator[0]->coswave(1.0/mSpeed);
+				mGain[1] = mOscillator[1]->sinewave(1.0/mSpeed);
 			}
-			for (int channel = 0; channel < data.inputs->numChannels; channel++)
+			for (int channel = 0; channel < data.outputs->numChannels; channel++)
 			{
 				if (data.symbolicSampleSize == Steinberg::Vst::kSample32) //32-Bit
 				{
 					//*data.outputs[channel].channelBuffers32[sample] = *data.inputs[channel].channelBuffers32[sample] * mGainLeft;
+					data.outputs[0].channelBuffers32[channel][sample] = data.inputs[0].channelBuffers32[channel][sample] * mGain[channel];
 				}
 				else // 64-Bit
 				{
 					//*data.outputs[channel].channelBuffers64[sample] = *data.inputs[channel].channelBuffers64[sample] * mGainRight;
+					data.outputs[0].channelBuffers64[channel][sample] = data.inputs[0].channelBuffers64[channel][sample] * mGain[channel];
 				}
 			}
 		}
