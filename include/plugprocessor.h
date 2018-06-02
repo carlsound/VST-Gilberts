@@ -8,6 +8,12 @@
 namespace Carlsound {
 namespace Gilberts {
 
+union SampleType
+{
+	Steinberg::Vst::Sample32* smpl32;
+	Steinberg::Vst::Sample64* smpl64;
+};
+
 //-----------------------------------------------------------------------------
 class PlugProcessor : public Steinberg::Vst::AudioEffect
 {
@@ -38,6 +44,7 @@ protected:
 	std::shared_ptr<maxiSettings> mOscillatorSettings;
 	std::shared_ptr<maxiOsc> mOscillator[2];
 	double mGain[2];
+	SampleType* mIn, *mOut;
 };
 
 //------------------------------------------------------------------------

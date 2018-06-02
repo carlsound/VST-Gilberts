@@ -7,6 +7,7 @@
 #include "pluginterfaces/base/ibstream.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include <public.sdk/source/vst/vstaudioprocessoralgo.h>
+#include "pluginterfaces/vst/vsttypes.h"
 
 namespace Carlsound {
 namespace Gilberts {
@@ -168,13 +169,17 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 			{
 				if (data.symbolicSampleSize == Steinberg::Vst::kSample32) //32-Bit
 				{
-					//*data.outputs[channel].channelBuffers32[sample] = *data.inputs[channel].channelBuffers32[sample] * mGainLeft;
-					data.outputs[0].channelBuffers32[channel][sample] = data.inputs[0].channelBuffers32[channel][sample] * mGain[channel];
+					//data.outputs[0].channelBuffers32[channel][sample] = data.inputs[0].channelBuffers32[channel][sample] * mGain[channel];
+					mIn->smpl32  = (Steinberg::Vst::Sample32*)in[channel];
+					mOut->smpl32 = (Steinberg::Vst::Sample32*)out[channel];
+					*(mOut->smpl32 + sample) = *(mIn->smpl32 + sample) * mGain[channel];
 				}
 				else // 64-Bit
 				{
-					//*data.outputs[channel].channelBuffers64[sample] = *data.inputs[channel].channelBuffers64[sample] * mGainRight;
-					data.outputs[0].channelBuffers64[channel][sample] = data.inputs[0].channelBuffers64[channel][sample] * mGain[channel];
+					//data.outputs[0].channelBuffers64[channel][sample] = data.inputs[0].channelBuffers64[channel][sample] * mGain[channel];
+					mIn->smpl64 = (Steinberg::Vst::Sample64*)in[channel];
+					mOut->smpl64 = (Steinberg::Vst::Sample64*)out[channel];
+					*(mOut->smpl64 + sample) = *(mIn->smpl64 + sample) * mGain[channel];
 				}
 			}
 		}
