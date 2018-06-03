@@ -25,27 +25,28 @@ Steinberg::tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 			                     0, // unitUD
 			                     STR16("Bypass")); // shortTitle
 
-		/*
 		parameters.addParameter (STR16 ("Speed"), // title
 		                         STR16 ("sec"), // units
-			                     0, // stepCount
-			                     1, // defaultValueNormalized
+			                     99, // stepCount
+			                     0.1, // defaultValueNormalized
                                  Steinberg::Vst::ParameterInfo::kCanAutomate, GilbertsParams::kParamSpeedId, // flags
 			                     0, // unitID
 		                         STR16 ("Speed")); // shortTitle
-		*/
+		
 
-		m_speedParameter = std::make_shared<Steinberg::Vst::RangeParameter> (STR16("Speed"), // title
+		/*
+		m_speedRangeParameter = std::make_shared<Steinberg::Vst::RangeParameter> (STR16("Speed"), // title
 			                                                                 GilbertsParams::kParamSpeedId, // ParamID
 			                                                                 STR16("sec"), // units
 			                                                                 0.1, // minPlain
 			                                                                 10.0, // maxPlain
 			                                                                 1.0, // defaultValuePlain
-			                                                                 0, // stepCount
+			                                                                 99, // stepCount
 			                                                                 Steinberg::Vst::ParameterInfo::kCanAutomate, // flags
 			                                                                 0, // unitID
 			                                                                 STR16("Speed")); // shortTitle
-		parameters.addParameter(m_speedParameter->getInfo());
+		parameters.addParameter(m_speedRangeParameter->getInfo());
+		*/
 	}
     return Steinberg::kResultTrue;
 }
@@ -72,6 +73,33 @@ Steinberg::tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 	setParamNormalized (kBypassId, bypassState ? 1 : 0);
 
     return Steinberg::kResultOk;
+}
+
+	//------------------------------------------------------------------------
+Steinberg::Vst::ParamValue PlugController::normalizedParamToPlain(Steinberg::Vst::ParamID tag,
+		Steinberg::Vst::ParamValue valueNormalized)
+{
+	if(kParamSpeedId == tag)
+	{
+		return (valueNormalized * 10.0);
+	}
+	else
+	{
+		return valueNormalized;
+	}
+}
+
+//------------------------------------------------------------------------
+Steinberg::Vst::ParamValue PlugController::plainParamToNormalized(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue value)
+{
+	if (kParamSpeedId == tag)
+	{
+		return (value / 10.0);
+	}
+	else
+	{
+		return value;
+	}
 }
 
 //------------------------------------------------------------------------

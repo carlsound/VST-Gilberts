@@ -6,7 +6,10 @@
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
+#include "plugcontroller.h"
+
 #include "maximilian.h"
+#include <public.sdk/source/vst/vstparameters.h>
 
 namespace Carlsound {
 namespace Gilberts {
@@ -39,11 +42,15 @@ public:
 
 
 protected:
-	Steinberg::Vst::ParamValue mSpeed = 0;
-	bool mBypass = false;
-	std::shared_ptr<maxiSettings> mOscillatorSettings;
-    std::shared_ptr<maxiOsc> mOscillator[2];
-	double mGain[2];
+	Steinberg::Vst::ParamValue m_speedNormalizedValue = 0;
+	bool m_bypassState = false;
+	//
+	std::shared_ptr<maxiSettings> m_oscillatorSettings;
+    std::shared_ptr<maxiOsc> m_oscillator[2];
+	//
+	double m_gainValue[2];
+	//
+	std::shared_ptr<Steinberg::Vst::RangeParameter> m_speedRangeParameter;
 };
 
 //------------------------------------------------------------------------

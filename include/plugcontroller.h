@@ -27,7 +27,10 @@ public:
 	//---from EditController-----
 	Steinberg::tresult PLUGIN_API setComponentState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 
-	std::shared_ptr<Steinberg::Vst::RangeParameter> m_speedParameter;
+	Steinberg::Vst::ParamValue PLUGIN_API normalizedParamToPlain(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue valueNormalized) SMTG_OVERRIDE;
+	Steinberg::Vst::ParamValue PLUGIN_API plainParamToNormalized(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue value) SMTG_OVERRIDE;
+
+	//std::shared_ptr<Steinberg::Vst::RangeParameter> m_speedRangeParameter;
 };
 
 //------------------------------------------------------------------------

@@ -32,11 +32,22 @@ Steinberg::tresult PLUGIN_API PlugProcessor::initialize (FUnknown* context)
 	// we want a stereo Input and a Stereo Output
 	addAudioInput (STR16 ("AudioInput"), Steinberg::Vst::SpeakerArr::kStereo);
 	addAudioOutput (STR16 ("AudioOutput"), Steinberg::Vst::SpeakerArr::kStereo);
-
-	mOscillator[0] = std::make_shared<maxiOsc>();
-	mOscillator[1] = std::make_shared<maxiOsc>();
-
-	mOscillatorSettings = std::make_shared<maxiSettings>();
+	//
+	m_oscillator[0] = std::make_shared<maxiOsc>();
+	m_oscillator[1] = std::make_shared<maxiOsc>();
+	//
+	m_oscillatorSettings = std::make_shared<maxiSettings>();
+	//
+	m_speedRangeParameter = std::make_shared<Steinberg::Vst::RangeParameter>(STR16("Speed"), // title
+		GilbertsParams::kParamSpeedId, // ParamID
+		STR16("sec"), // units
+		0.1, // minPlain
+		10.0, // maxPlain
+		1.0, // defaultValuePlain
+		99, // stepCount
+		Steinberg::Vst::ParameterInfo::kCanAutomate, // flags
+		0, // unitID
+		STR16("Speed")); // shortTitle
 
 	return Steinberg::kResultTrue;
 }
@@ -102,12 +113,12 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 					case GilbertsParams::kParamSpeedId:
 						if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
 								Steinberg::kResultTrue)
-							mSpeed = value;
+							m_speedNormalizedValue = value;
 						break;
 					case GilbertsParams::kBypassId:
 						if (paramQueue->getPoint (numPoints - 1, sampleOffset, value) ==
 								Steinberg::kResultTrue)
-							mBypass = (value > 0.5f);
+							m_bypassState = (value > 0.5f);
 						break;
 				}
 			}
@@ -128,9 +139,9 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 		// Ex: algo.process (data.inputs[0].channelBuffers32, data.outputs[0].channelBuffers32,
 		// data.numSamples);
 
-		mOscillatorSettings->channels = data.inputs[0].numChannels;
-		mOscillatorSettings->bufferSize = data.numSamples;
-		mOscillatorSettings->sampleRate = (int) processSetup.sampleRate;
+		m_oscillatorSettings->channels = data.inputs[0].numChannels;
+		m_oscillatorSettings->bufferSize = data.numSamples;
+		m_oscillatorSettings->sampleRate = (int) processSetup.sampleRate;
 
         // assume the same input channel count as the output
 		Steinberg::int32 numChannels = data.inputs[0].numChannels;
@@ -166,52 +177,52 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 
         for (int sample = 0; sample < data.numSamples; sample++)
 		{
-			if(mBypass)
+			if(m_bypassState)
 			{
-				mGain[0] = 1.0;
-				mGain[1] = 1.0;
+				m_gainValue[0] = 1.0;
+				m_gainValue[1] = 1.0;
 			}
 			else
 			{
-				mGain[0] = mOscillator[0]->coswave(1.0); //(1.0/mSpeed)
-				mGain[1] = mOscillator[1]->sinewave(1.0); //(1.0/mSpeed)
+				m_gainValue[0] = m_oscillator[0]->coswave(1.0 / (m_speedRangeParameter->toPlain(m_speedNormalizedValue))); //(1.0/m_speedNormalizedValue)
+				m_gainValue[1] = m_oscillator[1]->sinewave(1.0 / (m_speedRangeParameter->toPlain(m_speedNormalizedValue))); //(1.0/m_speedNormalizedValue)
 			}
 			for (int channel = 0; channel < data.outputs->numChannels; channel++)
 			{
 				if (data.symbolicSampleSize == Steinberg::Vst::kSample32) //32-Bit
 				{
-					//data.outputs[0].channelBuffers32[channel][sample] = data.inputs[0].channelBuffers32[channel][sample] * mGain[channel];
+					//data.outputs[0].channelBuffers32[channel][sample] = data.inputs[0].channelBuffers32[channel][sample] * m_gainValue[channel];
 					//auto pIn32 = static_cast<Steinberg::Vst::Sample32*>(in[channel]);
 					//auto pOut32 = static_cast<Steinberg::Vst::Sample32*>(out[channel]);
 					//
 					//pIn32 = pIn32 + sample;
 					//pOut32 = pOut32 + sample;
 					//
-					//*pOut32 = *pIn32 * mGain[channel];
+					//*pOut32 = *pIn32 * m_gainValue[channel];
 					//
-					//bufferSampleGain(pIn32, pOut32, sample, mGain[channel]);
+					//bufferSampleGain(pIn32, pOut32, sample, m_gainValue[channel]);
 					bufferSampleGain(static_cast<Steinberg::Vst::Sample32*>(in[channel]),
 						             static_cast<Steinberg::Vst::Sample32*>(out[channel]),
 						             sample,
-						             mGain[channel]);
+						             m_gainValue[channel]);
 				}
 				else // 64-Bit
 				{
-					//data.outputs[0].channelBuffers64[channel][sample] = data.inputs[0].channelBuffers64[channel][sample] * mGain[channel];
+					//data.outputs[0].channelBuffers64[channel][sample] = data.inputs[0].channelBuffers64[channel][sample] * m_gainValue[channel];
 					//auto pIn64 = static_cast<Steinberg::Vst::Sample64*>(in[channel]);
 					//auto pOut64 = static_cast<Steinberg::Vst::Sample64*>(out[channel]);
 					//
 					//pIn64 = pIn64 + sample;
 					//pOut64 = pOut64 + sample;
 					//
-					//*pOut64 = *pIn64 * mGain[channel];
+					//*pOut64 = *pIn64 * m_gainValue[channel];
 					//
-					//bufferSampleGain(pIn64, pOut64, sample, mGain[channel]);
+					//bufferSampleGain(pIn64, pOut64, sample, m_gainValue[channel]);
 					//
 					bufferSampleGain(static_cast<Steinberg::Vst::Sample64*>(in[channel]),
 						             static_cast<Steinberg::Vst::Sample64*>(out[channel]),
 						             sample,
-						             mGain[channel]);
+						             m_gainValue[channel]);
 				}
 			}
 		}
@@ -240,8 +251,8 @@ Steinberg::tresult PLUGIN_API PlugProcessor::setState (Steinberg::IBStream* stat
 	if (streamer.readInt32 (savedBypass) == false)
 		return Steinberg::kResultFalse;
 
-	mSpeed = savedParam1;
-	mBypass = savedBypass > 0;
+	m_speedNormalizedValue = savedParam1;
+	m_bypassState = savedBypass > 0;
 
 	return Steinberg::kResultOk;
 }
@@ -251,8 +262,8 @@ Steinberg::tresult PLUGIN_API PlugProcessor::getState (Steinberg::IBStream* stat
 {
 	// here we need to save the model (preset or project)
 
-	float toSaveParam1 = mSpeed;
-	Steinberg::int32 toSaveBypass = mBypass ? 1 : 0;
+	float toSaveParam1 = m_speedNormalizedValue;
+	Steinberg::int32 toSaveBypass = m_bypassState ? 1 : 0;
 
 	Steinberg::IBStreamer streamer (state, kLittleEndian);
 	streamer.writeFloat (toSaveParam1);
