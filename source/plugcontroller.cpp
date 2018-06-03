@@ -5,6 +5,8 @@
 
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/base/ibstream.h"
+#include <string>
+#include "public.sdk/source/vst/hosting/stringconvert.h"
 
 namespace Carlsound {
 namespace Gilberts {
@@ -75,13 +77,13 @@ Steinberg::tresult PLUGIN_API PlugController::initialize (FUnknown* context)
     return Steinberg::kResultOk;
 }
 
-	//------------------------------------------------------------------------
+//------------------------------------------------------------------------
 Steinberg::Vst::ParamValue PlugController::normalizedParamToPlain(Steinberg::Vst::ParamID tag,
 		Steinberg::Vst::ParamValue valueNormalized)
 {
 	if(kParamSpeedId == tag)
 	{
-		return (valueNormalized * 10.0);
+		return ((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10);
 	}
 	else
 	{
@@ -100,6 +102,19 @@ Steinberg::Vst::ParamValue PlugController::plainParamToNormalized(Steinberg::Vst
 	{
 		return value;
 	}
+}
+
+//------------------------------------------------------------------------
+Steinberg::tresult PlugController::getParamStringByValue(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue valueNormalized, Steinberg::Vst::String128 string)
+{
+	if (kParamSpeedId == tag)
+	{
+		std::string str = (std::to_string((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10));
+		string = new TCHAR[str.size() + 1];
+		string[str.size()] = 0;
+		std::copy(str.begin(), str.end(), string);
+	}
+	return Steinberg::kResultOk;
 }
 
 //------------------------------------------------------------------------
