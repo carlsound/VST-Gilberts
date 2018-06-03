@@ -3,6 +3,7 @@
 #pragma once
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
+#include <memory>
 
 namespace Carlsound {
 namespace Gilberts {
@@ -25,6 +26,8 @@ public:
 
 	//---from EditController-----
 	Steinberg::tresult PLUGIN_API setComponentState (Steinberg::IBStream* state) SMTG_OVERRIDE;
+
+	std::shared_ptr<Steinberg::Vst::RangeParameter> m_speedParameter;
 };
 
 //------------------------------------------------------------------------

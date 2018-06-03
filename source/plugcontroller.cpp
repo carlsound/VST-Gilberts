@@ -16,13 +16,36 @@ Steinberg::tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 	if (result == Steinberg::kResultTrue)
 	{
 		//---Create Parameters------------
-		parameters.addParameter (STR16 ("Bypass"), 0, 1, 0,
-                                 Steinberg::Vst::ParameterInfo::kCanAutomate | Steinberg::Vst::ParameterInfo::kIsBypass,
-		                         GilbertsParams::kBypassId, 0, STR16("Bypass"));
+		parameters.addParameter (STR16 ("Bypass"), // title
+			                     0, // units
+			                     1, // stepCount
+			                     0, // defaultValueNormalized
+                                 Steinberg::Vst::ParameterInfo::kCanAutomate | Steinberg::Vst::ParameterInfo::kIsBypass, // flags
+		                         GilbertsParams::kBypassId, // tag
+			                     0, // unitUD
+			                     STR16("Bypass")); // shortTitle
 
-		parameters.addParameter (STR16 ("Speed"), STR16 ("sec"), 0, 1,
-                                 Steinberg::Vst::ParameterInfo::kCanAutomate, GilbertsParams::kParamSpeedId, 0,
-		                         STR16 ("Speed"));
+		/*
+		parameters.addParameter (STR16 ("Speed"), // title
+		                         STR16 ("sec"), // units
+			                     0, // stepCount
+			                     1, // defaultValueNormalized
+                                 Steinberg::Vst::ParameterInfo::kCanAutomate, GilbertsParams::kParamSpeedId, // flags
+			                     0, // unitID
+		                         STR16 ("Speed")); // shortTitle
+		*/
+
+		m_speedParameter = std::make_shared<Steinberg::Vst::RangeParameter> (STR16("Speed"), // title
+			                                                                 GilbertsParams::kParamSpeedId, // ParamID
+			                                                                 STR16("sec"), // units
+			                                                                 0.1, // minPlain
+			                                                                 10.0, // maxPlain
+			                                                                 1.0, // defaultValuePlain
+			                                                                 0, // stepCount
+			                                                                 Steinberg::Vst::ParameterInfo::kCanAutomate, // flags
+			                                                                 0, // unitID
+			                                                                 STR16("Speed")); // shortTitle
+		parameters.addParameter(m_speedParameter->getInfo());
 	}
     return Steinberg::kResultTrue;
 }
