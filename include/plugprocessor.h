@@ -35,6 +35,9 @@ public:
 		return (Steinberg::Vst::IAudioProcessor*)new PlugProcessor ();
 	}
 
+	template <class T> void bufferSampleGain(T inBuffer, T outBuffer, const int sampleLocation, const double gainValue);
+
+
 protected:
 	Steinberg::Vst::ParamValue mSpeed = 0;
 	bool mBypass = false;
