@@ -1,18 +1,15 @@
 //------------------------------------------------------------------------
 #pragma once
 
+#define _USE_MATH_DEFINES 
+#include <cmath>
+
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 #include "maximilian.h"
 
 namespace Carlsound {
 namespace Gilberts {
-
-union SampleType
-{
-	Steinberg::Vst::Sample32* smpl32;
-	Steinberg::Vst::Sample64* smpl64;
-};
 
 //-----------------------------------------------------------------------------
 class PlugProcessor : public Steinberg::Vst::AudioEffect
@@ -42,9 +39,8 @@ protected:
 	Steinberg::Vst::ParamValue mSpeed = 0;
 	bool mBypass = false;
 	std::shared_ptr<maxiSettings> mOscillatorSettings;
-	std::shared_ptr<maxiOsc> mOscillator[2];
+    std::shared_ptr<maxiOsc> mOscillator[2];
 	double mGain[2];
-	SampleType* mIn, *mOut;
 };
 
 //------------------------------------------------------------------------

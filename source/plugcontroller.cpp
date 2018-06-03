@@ -18,9 +18,9 @@ Steinberg::tresult PLUGIN_API PlugController::initialize (FUnknown* context)
 		//---Create Parameters------------
 		parameters.addParameter (STR16 ("Bypass"), 0, 1, 0,
                                  Steinberg::Vst::ParameterInfo::kCanAutomate | Steinberg::Vst::ParameterInfo::kIsBypass,
-		                         GilbertsParams::kBypassId);
+		                         GilbertsParams::kBypassId, 0, STR16("Bypass"));
 
-		parameters.addParameter (STR16 ("Speed"), STR16 ("sec"), 0, .5,
+		parameters.addParameter (STR16 ("Speed"), STR16 ("sec"), 0, 1,
                                  Steinberg::Vst::ParameterInfo::kCanAutomate, GilbertsParams::kParamSpeedId, 0,
 		                         STR16 ("Speed"));
 	}

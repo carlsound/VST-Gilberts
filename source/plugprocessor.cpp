@@ -8,6 +8,7 @@
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include <public.sdk/source/vst/vstaudioprocessoralgo.h>
 #include "pluginterfaces/vst/vsttypes.h"
+#include "public.sdk/samples/vst/note_expression_synth/source/note_expression_synth_voice.h"
 
 namespace Carlsound {
 namespace Gilberts {
@@ -152,7 +153,7 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 
         // mark our outputs has not silent
         data.outputs[0].silenceFlags = 0;
-        
+
         for (int sample = 0; sample < data.numSamples; sample++)
 		{
 			if(mBypass)
@@ -162,24 +163,32 @@ Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessDat
 			}
 			else
 			{
-				mGain[0] = mOscillator[0]->coswave(1.0/mSpeed);
-				mGain[1] = mOscillator[1]->sinewave(1.0/mSpeed);
+				mGain[0] = mOscillator[0]->coswave(1.0); //(1.0/mSpeed)
+				mGain[1] = mOscillator[1]->sinewave(1.0); //(1.0/mSpeed)
 			}
 			for (int channel = 0; channel < data.outputs->numChannels; channel++)
 			{
 				if (data.symbolicSampleSize == Steinberg::Vst::kSample32) //32-Bit
 				{
 					//data.outputs[0].channelBuffers32[channel][sample] = data.inputs[0].channelBuffers32[channel][sample] * mGain[channel];
-					mIn->smpl32  = (Steinberg::Vst::Sample32*)in[channel];
-					mOut->smpl32 = (Steinberg::Vst::Sample32*)out[channel];
-					*(mOut->smpl32 + sample) = *(mIn->smpl32 + sample) * mGain[channel];
+					auto pIn32 = static_cast<Steinberg::Vst::Sample32*>(in[channel]);
+					auto pOut32 = static_cast<Steinberg::Vst::Sample32*>(out[channel]);
+					//
+					pIn32 = pIn32 + sample;
+					pOut32 = pOut32 + sample;
+					//
+					*pOut32 = *pIn32 * mGain[channel];
 				}
 				else // 64-Bit
 				{
 					//data.outputs[0].channelBuffers64[channel][sample] = data.inputs[0].channelBuffers64[channel][sample] * mGain[channel];
-					mIn->smpl64 = (Steinberg::Vst::Sample64*)in[channel];
-					mOut->smpl64 = (Steinberg::Vst::Sample64*)out[channel];
-					*(mOut->smpl64 + sample) = *(mIn->smpl64 + sample) * mGain[channel];
+					auto pIn64 = static_cast<Steinberg::Vst::Sample64*>(in[channel]);
+					auto pOut64 = static_cast<Steinberg::Vst::Sample64*>(out[channel]);
+					//
+					pIn64 = pIn64 + sample;
+					pOut64 = pOut64 + sample;
+					//
+					*pOut64 = *pIn64 * mGain[channel];
 				}
 			}
 		}
