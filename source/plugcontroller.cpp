@@ -105,36 +105,32 @@ Steinberg::Vst::ParamValue PlugController::plainParamToNormalized(Steinberg::Vst
 }
 
 //------------------------------------------------------------------------
-/*
+
 Steinberg::tresult PlugController::getParamStringByValue(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue valueNormalized, Steinberg::Vst::String128 string)
 {
 	
 	if(GilbertsParams::kBypassId == tag)
 	{
-		std::string str;
 		if(valueNormalized)
 		{
-			str = "On";
+			_tcscpy(string, L"On");
 		}
 		else
 		{
-			str = "Off";
+			_tcscpy(string, L"Off");
 		}
-		string = new TCHAR[str.size() + 1];
-		string[str.size()] = 0;
-		std::copy(str.begin(), str.end(), string);
 	}
 	if (GilbertsParams::kParamSpeedId == tag)
 	{
-		std::string str;
-		str = (std::to_string((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10));
-		string = new TCHAR[str.size() + 1];
-		string[str.size()] = 0;
-		std::copy(str.begin(), str.end(), string);
+		std::wstring wstr = std::to_wstring((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10);
+		_tcscpy(string, wstr.c_str());
+		//string = new TCHAR[str.size() + 1];
+		//string[str.size()] = '\0';
+		//std::copy(str.begin(), str.end(), string);
 	}
 	return Steinberg::kResultOk;
 }
-*/
+
 
 //------------------------------------------------------------------------
 } // namespace Gilberts
