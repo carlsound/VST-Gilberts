@@ -24,16 +24,26 @@ public:
 		return (Steinberg::Vst::IEditController*) new PlugController ();
 	}
 
+	///////////////////////////////////////////////////////////////////////////
 	//---from IPluginBase--------
 	Steinberg::tresult PLUGIN_API initialize (FUnknown* context) SMTG_OVERRIDE;
 
+	///////////////////////////////////////////////////////////////////////////
 	//---from EditController-----
 	Steinberg::tresult PLUGIN_API setComponentState (Steinberg::IBStream* state) SMTG_OVERRIDE;
 
-	Steinberg::Vst::ParamValue PLUGIN_API normalizedParamToPlain(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue valueNormalized) SMTG_OVERRIDE;
-	Steinberg::Vst::ParamValue PLUGIN_API plainParamToNormalized(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue value) SMTG_OVERRIDE;
-	Steinberg::tresult PLUGIN_API getParamStringByValue(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue valueNormalized, Steinberg::Vst::String128 string) SMTG_OVERRIDE;
+	Steinberg::Vst::ParamValue PLUGIN_API normalizedParamToPlain(Steinberg::Vst::ParamID tag, 
+		                                                         Steinberg::Vst::ParamValue valueNormalized) SMTG_OVERRIDE;
+	
+	Steinberg::Vst::ParamValue PLUGIN_API plainParamToNormalized(Steinberg::Vst::ParamID tag,
+		                                                         Steinberg::Vst::ParamValue value) SMTG_OVERRIDE;
+	
+	Steinberg::tresult PLUGIN_API getParamStringByValue(Steinberg::Vst::ParamID tag,
+		                                                Steinberg::Vst::ParamValue valueNormalized,
+		                                                Steinberg::Vst::String128 string) SMTG_OVERRIDE;
 
+	///////////////////////////////////////////////////////////////////////////
+	//---member variables----
 	//std::shared_ptr<Steinberg::Vst::RangeParameter> m_speedRangeParameter;
 };
 

@@ -92,7 +92,8 @@ Steinberg::Vst::ParamValue PlugController::normalizedParamToPlain(Steinberg::Vst
 }
 
 //------------------------------------------------------------------------
-Steinberg::Vst::ParamValue PlugController::plainParamToNormalized(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue value)
+Steinberg::Vst::ParamValue PlugController::plainParamToNormalized(Steinberg::Vst::ParamID tag,
+	                                                              Steinberg::Vst::ParamValue value)
 {
 	if (kParamSpeedId == tag)
 	{
@@ -106,7 +107,9 @@ Steinberg::Vst::ParamValue PlugController::plainParamToNormalized(Steinberg::Vst
 
 //------------------------------------------------------------------------
 
-Steinberg::tresult PlugController::getParamStringByValue(Steinberg::Vst::ParamID tag, Steinberg::Vst::ParamValue valueNormalized, Steinberg::Vst::String128 string)
+Steinberg::tresult PlugController::getParamStringByValue(Steinberg::Vst::ParamID tag,
+	                                                     Steinberg::Vst::ParamValue valueNormalized,
+	                                                     Steinberg::Vst::String128 string)
 {
 	
 	if(GilbertsParams::kBypassId == tag)
