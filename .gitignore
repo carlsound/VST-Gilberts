@@ -1,3 +1,8 @@
+# Temporary files
+*.tmp
+*.vs
+*.DS_Store
+
 # Prerequisites
 *.d
 
