@@ -87,7 +87,13 @@ namespace Carlsound
 		}
 		//-----------------------------------------------------------------------------
 		template<class T>
-		inline void Carlsound::Gilberts::PlugProcessor::bufferSampleGain(T inBuffer, T outBuffer, const int sampleLocation, const double gainValue)
+		inline void Carlsound::Gilberts::PlugProcessor::bufferSampleGain
+		(
+			T inBuffer, 
+			T outBuffer, 
+			const int sampleLocation, 
+			const double gainValue
+		)
 		{
 			inBuffer = inBuffer + sampleLocation;  // pointer arithmetic
 			outBuffer = outBuffer + sampleLocation; // pointer arithmetic
