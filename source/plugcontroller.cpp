@@ -154,40 +154,75 @@ namespace Carlsound
 				{
                     if(SMTG_OS_WINDOWS)
                     {
-					   tcscpy(string, L"On");
+                        _tcscpy(string, L"On");
                     }
                     if(SMTG_OS_OSX)
                     {
-                        *string = u'O';
-                        *(string+1) = u'n';
-                        *(string+2) = u'\0';
+						std::basic_string<char16_t> str16 = u"On";
+                        str16.copy(string, str16.length());
+                        /*
+                         for(int i = 0; i< str.length(); i++)
+                         {
+                         *string[i] = str[i];
+                         }
+                         */
+                        //*string = u'O';
+                        //*(string+1) = u'n';
+                        //*(string+2) = u'\0';
                     }
 				}
 				else
 				{
                     if(SMTG_OS_WINDOWS)
                     {
-					   tcscpy(string, L"Off");
+					   _tcscpy(string, L"Off");
                     }
                     if(SMTG_OS_OSX)
                     {
-                        *string = u'O';
-                        *(string+1) = u'f';
-                        *(string+2) = u'f';
-                        *(string+3) = u'\0';
+                        std::basic_string<char16_t> str16 = u"Off";
+                        str16.copy(string, str16.length());
+                        /*
+                        for(int i = 0; i< str.length(); i++)
+                        {
+                            *string[i] = str[i];
+                        }
+                         */
+                        //*string = u'O';
+                        //*(string+1) = u'f';
+                        //*(string+2) = u'f';
+                        //*(string+3) = u'\0';
                     }
                 }
 			}
 			if (GilbertsParams::kParamSpeedId == tag)
 			{
-				std::wstring wstr = std::to_wstring
-				(
-					(valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10
-				);
-				tcscpy(string, wstr.c_str());
-				//string = new TCHAR[str.size() + 1];
-				//string[str.size()] = '\0';
-				//std::copy(str.begin(), str.end(), string);
+                float valuePlain = ((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10);
+                //
+                if(SMTG_OS_WINDOWS)
+                {
+                    std::wstring wstr = std::to_wstring
+                    (
+                        valuePlain
+                    );
+                    tcscpy(string, wstr.c_str());
+                }
+                if(SMTG_OS_OSX)
+                {
+                    std::string str = std::to_string
+                    (
+                        valuePlain
+                    );
+                    str.copy(string, str.length());
+                    /*
+                    for(int i = 0; i< str.length(); i++)
+                    {
+                        *string[i] = str[i];
+                    }
+                    */
+                    //string = new TCHAR[str.size() + 1];
+                    //string[str.size()] = '\0';
+                    //std::copy(str.begin(), str.end(), string);
+                }
 			}
 			return Steinberg::kResultOk;
 		}
