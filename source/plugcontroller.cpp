@@ -152,12 +152,31 @@ namespace Carlsound
 			{
 				if(valueNormalized)
 				{
-					_tcscpy(string, L"On");
+                    if(SMTG_OS_WINDOWS)
+                    {
+					   tcscpy(string, L"On");
+                    }
+                    if(SMTG_OS_OSX)
+                    {
+                        *string = u'O';
+                        *(string+1) = u'n';
+                        *(string+2) = u'\0';
+                    }
 				}
 				else
 				{
-					_tcscpy(string, L"Off");
-				}
+                    if(SMTG_OS_WINDOWS)
+                    {
+					   tcscpy(string, L"Off");
+                    }
+                    if(SMTG_OS_OSX)
+                    {
+                        *string = u'O';
+                        *(string+1) = u'f';
+                        *(string+2) = u'f';
+                        *(string+3) = u'\0';
+                    }
+                }
 			}
 			if (GilbertsParams::kParamSpeedId == tag)
 			{
@@ -165,7 +184,7 @@ namespace Carlsound
 				(
 					(valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10
 				);
-				_tcscpy(string, wstr.c_str());
+				tcscpy(string, wstr.c_str());
 				//string = new TCHAR[str.size() + 1];
 				//string[str.size()] = '\0';
 				//std::copy(str.begin(), str.end(), string);

@@ -4,11 +4,11 @@
 //
 #if SMTG_OS_WINDOWS
 #include <atlconv.h>
+#include <tchar.h>
 #endif
 //
 #include <codecvt>
 #include <memory>
-#include <tchar.h>
 //
 namespace Carlsound
 {
