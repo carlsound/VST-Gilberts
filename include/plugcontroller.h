@@ -1,6 +1,7 @@
 #pragma once
 //
 #include "public.sdk/source/vst/vsteditcontroller.h"
+#include "public.sdk/source/vst/hosting/stringconvert.h"
 //
 #if SMTG_OS_WINDOWS
 #include <atlconv.h>
@@ -9,6 +10,7 @@
 //
 #include <codecvt>
 #include <memory>
+#include <string>
 //
 namespace Carlsound
 {
