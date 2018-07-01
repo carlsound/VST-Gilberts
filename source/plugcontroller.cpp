@@ -141,6 +141,15 @@ namespace Carlsound
 			}
 		}
 		//------------------------------------------------------------------------
+		void string128copy(Steinberg::Vst::TChar *str128, std::string &str)
+		{
+			for (int i = 0; i < str.length(); i++)
+			{
+				str128[i] = str[i];
+			}
+		}
+
+		//------------------------------------------------------------------------
 		Steinberg::tresult PlugController::getParamStringByValue
 		(
 			Steinberg::Vst::ParamID tag,
@@ -148,107 +157,26 @@ namespace Carlsound
 			Steinberg::Vst::String128 string
 		)
 		{
+			std::string valuePlainAscii;
+			//
 			if(GilbertsParams::kBypassId == tag)
 			{
 				if(valueNormalized) // on
 				{
-                    std::basic_string<char16_t> str16 = u"On";
-                    str16.copy(string, str16.length());
-                    
-                    //std::string str = "On";
-                    //VST3::StringConvert::convert(str, string);
-                    //string = VST3::toTChar(str);
-                    //char status[] = {'O','n','\0'};
-                    
-                    //if(SMTG_OS_WINDOWS)
-                    //{
-                        //_tcscpy(string, L"On");
-                        //VST3::StringConvert::convert(str, string);
-                    //}
-                    
-                   // else if(SMTG_OS_OSX)
-                    //{
-                        //std::basic_string<char16_t> str16 = u"On";
-                        //str16.copy(string, str16.length());
-                        //for(int i = 0; i< status.length(); i++)
-                        //for(int i = 0; i< sizeof(status); i++)
-                        //{
-                            //string[i] = status[i];
-                        //}
-                        //*string = u'O';
-                        //*(string+1) = u'n';
-                        //*(string+2) = u'\0';
-                    //}
+					valuePlainAscii = "On: Bypassed";
 				}
 				else // off
 				{
-                    std::basic_string<char16_t> str16 = u"Off";
-                    str16.copy(string, str16.length());
-                    //std::string str = "Off";
-                    //VST3::StringConvert::convert(str, string);
-                    /*
-                    if(SMTG_OS_WINDOWS)
-                    {
-					   _tcscpy(string, L"Off");
-                    }
-                     */
-                    /*
-                    if(SMTG_OS_OSX)
-                    {
-                        std::basic_string<char16_t> str16 = u"Off";
-                        str16.copy(string, str16.length());
-                        //for(int i = 0; i< str.length(); i++)
-                        //{
-                            // *string[i] = str[i];
-                        //}
-                        //*string = u'O';
-                        //*(string+1) = u'f';
-                        //*(string+2) = u'f';
-                        //*(string+3) = u'\0';
-                    }
-                     */
+					valuePlainAscii = "Off: Active";
                 }
+				string128copy(string, valuePlainAscii);
 			}
 			if (GilbertsParams::kParamSpeedId == tag)
 			{
                 float valuePlain = ((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10);
-                
-                std::string valuePlainAscii = std::to_string(valuePlain);
-                //std::basic_string<char16_t> str16 = std::to_wstring(valuePlain);
-                //str16.copy(valuePlainAscii, str16.length());
-                for(int i = 0; i< valuePlainAscii.length(); i++)
-                {
-                    string[i] = valuePlainAscii[i];
-                }
-                
                 //
-                /*
-                if(SMTG_OS_WINDOWS)
-                {
-                    std::wstring wstr = std::to_wstring
-                    (
-                        valuePlain
-                    );
-                    tcscpy(string, wstr.c_str());
-                }
-                 */
-                /*
-                if(SMTG_OS_OSX)
-                {
-                    std::string str = std::to_string
-                    (
-                        valuePlain
-                    );
-                    str.copy(string, str.length());
-                    //for(int i = 0; i< str.length(); i++)
-                    //{
-                        // *string[i] = str[i];
-                    //}
-                    //string = new TCHAR[str.size() + 1];
-                    //string[str.size()] = '\0';
-                    //std::copy(str.begin(), str.end(), string);
-                }
-                */
+                valuePlainAscii = std::to_string(valuePlain);
+				string128copy(string, valuePlainAscii);
 			}
 			return Steinberg::kResultOk;
 		}
