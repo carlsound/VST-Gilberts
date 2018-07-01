@@ -160,15 +160,15 @@ namespace Carlsound
                     //string = VST3::toTChar(str);
                     //char status[] = {'O','n','\0'};
                     
-                    if(SMTG_OS_WINDOWS)
-                    {
+                    //if(SMTG_OS_WINDOWS)
+                    //{
                         //_tcscpy(string, L"On");
                         //VST3::StringConvert::convert(str, string);
-                    }
+                    //}
                     
-                    if(SMTG_OS_OSX)
-                    {
-						//std::basic_string<char16_t> str16 = u"On";
+                   // else if(SMTG_OS_OSX)
+                    //{
+                        //std::basic_string<char16_t> str16 = u"On";
                         //str16.copy(string, str16.length());
                         //for(int i = 0; i< status.length(); i++)
                         //for(int i = 0; i< sizeof(status); i++)
@@ -178,13 +178,12 @@ namespace Carlsound
                         //*string = u'O';
                         //*(string+1) = u'n';
                         //*(string+2) = u'\0';
-                    }
+                    //}
 				}
 				else // off
 				{
                     std::basic_string<char16_t> str16 = u"Off";
                     str16.copy(string, str16.length());
-                    
                     //std::string str = "Off";
                     //VST3::StringConvert::convert(str, string);
                     /*
@@ -214,9 +213,13 @@ namespace Carlsound
 			{
                 float valuePlain = ((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10);
                 
-                std::string str16 = std::to_string(valuePlain);
+                std::string valuePlainAscii = std::to_string(valuePlain);
                 //std::basic_string<char16_t> str16 = std::to_wstring(valuePlain);
-                str16.copy(string, str16.length());
+                //str16.copy(valuePlainAscii, str16.length());
+                for(int i = 0; i< valuePlainAscii.length(); i++)
+                {
+                    string[i] = valuePlainAscii[i];
+                }
                 
                 //
                 /*
