@@ -22,12 +22,13 @@
 #define VERSION_STR MAJOR_VERSION_STR "." SUB_VERSION_STR "." RELEASE_NUMBER_STR
 //
 // HERE you have to define your plug-in, company name, email and web
-#define stringPluginName		"Gilberts"
 //
 #if SMTG_PLATFORM_64
+#define stringPluginName		"Gilberts-x64"
 #define stringOriginalFilename	"Gilberts-x64.vst3"
 #define stringFileDescription	stringPluginName" VST3-SDK (64Bit)"
 #else
+#define stringPluginName		"Gilberts-x86"
 #define stringOriginalFilename	"Gilberts-x86.vst3"
 #define stringFileDescription	stringPluginName" VST3-SDK"
 #endif

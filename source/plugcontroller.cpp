@@ -147,6 +147,7 @@ namespace Carlsound
 			{
 				str128[i] = str[i];
 			}
+			str128[str.length()] = '\0';
 		}
 
 		//------------------------------------------------------------------------
@@ -163,11 +164,13 @@ namespace Carlsound
 			{
 				if(valueNormalized) // on
 				{
-					valuePlainAscii = "On: Bypassed";
+					valuePlainAscii.clear();
+					valuePlainAscii = "On: Bypassed\0";
 				}
 				else // off
 				{
-					valuePlainAscii = "Off: Active";
+					valuePlainAscii.clear();
+					valuePlainAscii = "Off: Active\0";
                 }
 				string128copy(string, valuePlainAscii);
 			}
@@ -175,7 +178,7 @@ namespace Carlsound
 			{
                 float valuePlain = ((valueNormalized * ((10.0 - 0.1) / 1.0)) + 0.10);
                 //
-                valuePlainAscii = std::to_string(valuePlain);
+                valuePlainAscii = std::to_string(valuePlain) + '\0';
 				string128copy(string, valuePlainAscii);
 			}
 			return Steinberg::kResultOk;
