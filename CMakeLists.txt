@@ -20,9 +20,9 @@ set(plug_sources
 if(MAC)
 	set(target Gilberts)
 elseif((WIN) AND (CMAKE_SIZEOF_VOID_P EQUAL "8"))
-    set(target Gilberts-x64)
+    set(target Gilberts_x64)
 elseif(WIN)
-	set(target Gilberts-x86)
+	set(target Gilberts_x86)
 endif()
 
 smtg_add_vst3plugin(${target} ${SDK_ROOT} ${plug_sources})

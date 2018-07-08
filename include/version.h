@@ -24,12 +24,12 @@
 // HERE you have to define your plug-in, company name, email and web
 //
 #if SMTG_PLATFORM_64
-#define stringPluginName		"Gilberts-x64"
-#define stringOriginalFilename	"Gilberts-x64.vst3"
+#define stringPluginName		"Gilberts_x64"
+#define stringOriginalFilename	"Gilberts_x64.vst3"
 #define stringFileDescription	stringPluginName" VST3-SDK (64Bit)"
 #else
-#define stringPluginName		"Gilberts-x86"
-#define stringOriginalFilename	"Gilberts-x86.vst3"
+#define stringPluginName		"Gilberts_x86"
+#define stringOriginalFilename	"Gilberts_x86.vst3"
 #define stringFileDescription	stringPluginName" VST3-SDK"
 #endif
 #define stringCompanyName		"Carlsound\0"
