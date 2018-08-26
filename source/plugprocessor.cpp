@@ -1,12 +1,4 @@
 #include "../include/plugprocessor.h"
-#include "../include/plugids.h"
-//
-#include "base/source/fstreamer.h"
-#include "pluginterfaces/base/ibstream.h"
-#include "pluginterfaces/vst/ivstparameterchanges.h"
-#include <public.sdk/source/vst/vstaudioprocessoralgo.h>
-#include "pluginterfaces/vst/vsttypes.h"
-#include "public.sdk/samples/vst/note_expression_synth/source/note_expression_synth_voice.h"
 //
 namespace Carlsound
 {
@@ -71,7 +63,10 @@ namespace Carlsound
 			return Steinberg::kResultFalse;
 		}
 		//-----------------------------------------------------------------------------
-		Steinberg::tresult PLUGIN_API PlugProcessor::setActive (Steinberg::TBool state)
+		Steinberg::tresult PLUGIN_API PlugProcessor::setActive
+		(
+			Steinberg::TBool state
+		)
 		{
 			if (state) // Initialize
 			{
@@ -101,52 +96,63 @@ namespace Carlsound
 			*outBuffer = *inBuffer * gainValue;
 		}
 		//-----------------------------------------------------------------------------
-		Steinberg::tresult PLUGIN_API PlugProcessor::process (Steinberg::Vst::ProcessData& data)
+		Steinberg::tresult PLUGIN_API PlugProcessor::processInputParameterChanges
+		(
+			Steinberg::Vst::ProcessData& data
+		)
 		{
 			//--- Read inputs parameter changes-----------
 			if (data.inputParameterChanges)
 			{
-				Steinberg::int32 numParamsChanged = data.inputParameterChanges->getParameterCount ();
+				Steinberg::int32 numParamsChanged = data.inputParameterChanges->getParameterCount();
 				for (Steinberg::int32 index = 0; index < numParamsChanged; index++)
 				{
 					Steinberg::Vst::IParamValueQueue* paramQueue =
-						data.inputParameterChanges->getParameterData (index);
+						data.inputParameterChanges->getParameterData(index);
 					if (paramQueue)
 					{
 						Steinberg::Vst::ParamValue value;
 						Steinberg::int32 sampleOffset;
-						Steinberg::int32 numPoints = paramQueue->getPointCount ();
-						switch (paramQueue->getParameterId ())
+						Steinberg::int32 numPoints = paramQueue->getPointCount();
+						switch (paramQueue->getParameterId())
 						{
-							case GilbertsParams::kParamSpeedId:
+						case GilbertsParams::kParamSpeedId:
+						{
+							if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) ==
+								Steinberg::kResultTrue)
 							{
-								if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) ==
-									Steinberg::kResultTrue)
-								{
-									m_speedNormalizedValue = value;
-									break;
-								}
+								m_speedNormalizedValue = value;
+								break;
 							}
-							case GilbertsParams::kBypassId:
+						}
+						case GilbertsParams::kBypassId:
+						{
+							if (paramQueue->getPoint
+							(
+								numPoints - 1,
+								sampleOffset,
+								value
+							) ==
+								Steinberg::kResultTrue)
 							{
-								if (paramQueue->getPoint
-									(
-										numPoints - 1, 
-										sampleOffset, 
-										value
-									) ==
-									Steinberg::kResultTrue)
-								{
-									m_bypassState = (value > 0.5f);
-									break;
-								}
-									
+								m_bypassState = (value > 0.5f);
+								break;
 							}
-								
+
+						}
+
 						}
 					}
 				}
 			}
+			return Steinberg::kResultTrue;
+		}
+		//-----------------------------------------------------------------------------
+		Steinberg::tresult PLUGIN_API PlugProcessor::processAudio
+		(
+			Steinberg::Vst::ProcessData& data
+		)
+		{
 			//--- Process Audio---------------------
 			//--- ----------------------------------
 			if (data.numInputs == 0 || data.numOutputs == 0)
@@ -163,25 +169,25 @@ namespace Carlsound
 				//
 				m_oscillatorSettings->channels = data.inputs[0].numChannels;
 				m_oscillatorSettings->bufferSize = data.numSamples;
-				m_oscillatorSettings->sampleRate = (int) processSetup.sampleRate;
+				m_oscillatorSettings->sampleRate = (int)processSetup.sampleRate;
 				//
 				// assume the same input channel count as the output
 				Steinberg::int32 numChannels = data.inputs[0].numChannels;
 				//
 				//---get audio buffers----------------
-				Steinberg::uint32 sampleFramesSize = getSampleFramesSizeInBytes 
+				Steinberg::uint32 sampleFramesSize = getSampleFramesSizeInBytes
 				(
-					processSetup, 
+					processSetup,
 					data.numSamples
 				);
-				void** in = getChannelBuffersPointer 
+				void** in = getChannelBuffersPointer
 				(
-					processSetup, 
+					processSetup,
 					data.inputs[0]
 				);
-				void** out = getChannelBuffersPointer 
+				void** out = getChannelBuffersPointer
 				(
-					processSetup, 
+					processSetup,
 					data.outputs[0]
 				);
 				//
@@ -198,7 +204,7 @@ namespace Carlsound
 						// do not need to be cleared if the buffers are the same (in this case input buffer are already cleared by the host)
 						if (in[i] != out[i])
 						{
-							memset (out[i], 0, sampleFramesSize);
+							memset(out[i], 0, sampleFramesSize);
 						}
 					}
 					// nothing to do at this point
@@ -209,7 +215,7 @@ namespace Carlsound
 				//
 				for (int sample = 0; sample < data.numSamples; sample++)
 				{
-					if(m_bypassState)
+					if (m_bypassState)
 					{
 						m_gainValue[0] = 1.0;
 						m_gainValue[1] = 1.0;
@@ -236,9 +242,9 @@ namespace Carlsound
 							bufferSampleGain
 							(
 								static_cast<Steinberg::Vst::Sample32*>(in[channel]),
-						        static_cast<Steinberg::Vst::Sample32*>(out[channel]),
-						        sample,
-						        m_gainValue[channel]
+								static_cast<Steinberg::Vst::Sample32*>(out[channel]),
+								sample,
+								m_gainValue[channel]
 							);
 						}
 						else // 64-Bit
@@ -257,16 +263,37 @@ namespace Carlsound
 							bufferSampleGain
 							(
 								static_cast<Steinberg::Vst::Sample64*>(in[channel]),
-						        static_cast<Steinberg::Vst::Sample64*>(out[channel]),
-						        sample,
-						        m_gainValue[channel]
+								static_cast<Steinberg::Vst::Sample64*>(out[channel]),
+								sample,
+								m_gainValue[channel]
 							);
 						}
 					}
 				}
-				// Write outputs parameter changes-----------
-				Steinberg::Vst::IParameterChanges* outParamChanges = data.outputParameterChanges;
 			}
+			return Steinberg::kResultTrue;
+		}
+		//-----------------------------------------------------------------------------
+		Steinberg::tresult PLUGIN_API PlugProcessor::processOutputParameterChanges
+		(
+			Steinberg::Vst::ProcessData& data
+		)
+		{
+			// Write outputs parameter changes-----------
+			Steinberg::Vst::IParameterChanges* outParamChanges = data.outputParameterChanges;
+			//
+			return Steinberg::kResultTrue;
+		}
+		//-----------------------------------------------------------------------------
+		Steinberg::tresult PLUGIN_API PlugProcessor::process
+		(
+			Steinberg::Vst::ProcessData& data
+		)
+		{
+			processInputParameterChanges(data);
+			processAudio(data);
+			processOutputParameterChanges(data);
+			//
 			return Steinberg::kResultOk;
 		}
 		//-----------------------------------------------------------------------------
