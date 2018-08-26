@@ -89,7 +89,8 @@ namespace Carlsound
 			return (Steinberg::Vst::IAudioProcessor*)new PlugProcessor ();
 		}
 		//------------------------------------------------------------------------
-		template <class T> void bufferSampleGain
+		template <class T>
+		void bufferSampleGain
 		(
 			T inBuffer, 
 			T outBuffer, 
